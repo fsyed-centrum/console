@@ -1062,6 +1062,11 @@ RECIPES.forEach(r => {
 });
 
 /* ============ RENDER ============ */
+/* ---- custom presets (declared early: updateBadge reads `custom`) ---- */
+var CUSTOM_KEY = "promptConsole.customPresets.v1";
+var custom = [];
+try { const r = localStorage.getItem(CUSTOM_KEY); if (r) custom = JSON.parse(r) || []; } catch(e){}
+
 let drumsFirst = false;
 let wantVocals = true;
 let sepMode = "comma";
@@ -1112,7 +1117,7 @@ function updateBadge(){
   const d = document.getElementById("detachBtn");
   if (d) d.style.display = baseText ? "" : "none";
   const del = document.getElementById("delPresetBtn");
-  if (del) del.style.display = (baseName && custom.some(c => c.n === baseName)) ? "" : "none";
+  if (del) del.style.display = (baseName && Array.isArray(custom) && custom.some(c => c.n === baseName)) ? "" : "none";
 }
 const RHYTHM_IDS = ["drums","feel","poly","perc"];
 function pushMod(parts, m){
@@ -2069,10 +2074,6 @@ if (rawA) rawA.addEventListener("input", e => {
   render();
 });
 
-/* ---- custom presets ---- */
-const CUSTOM_KEY = "promptConsole.customPresets.v1";
-let custom = [];
-try { const r = localStorage.getItem(CUSTOM_KEY); if (r) custom = JSON.parse(r) || []; } catch(e){}
 function saveCustom(){ try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom)); } catch(e){} }
 function allPresets(){
   const overridden = new Set(custom.map(c => c.n.toLowerCase()));
